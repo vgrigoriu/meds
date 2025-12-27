@@ -1,0 +1,42 @@
+/* =============================================================================
+   Design Tokens for Meds
+   ============================================================================= */
+
+/* Typography - Google Fonts imports */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Font family tokens */
+:root {
+  --font-heading: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', Menlo, monospace;
+}
+
+/* Tailwind CSS class utilities */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* =============================================================================
+   Color Palette Reference (Tailwind built-in colors)
+
+   Primary: teal
+   - teal-50 through teal-950
+   - Use for: buttons, links, accents, selected states
+
+   Secondary: amber
+   - amber-50 through amber-950
+   - Use for: warnings, expired medications, secondary accents
+
+   Neutral: slate
+   - slate-50 through slate-950
+   - Use for: backgrounds, text, borders, cards
+   ============================================================================= */

@@ -1,0 +1,95 @@
+{
+  "_meta": {
+    "models": {
+      "medications": "Each medication represents an item in your medicine cabinet — could be pills, syrups, creams, or even supplies like bandages.",
+      "activeSubstances": "The actual drug compounds found in medications. Multiple medications may share the same active substance (e.g., generic and brand-name versions)."
+    },
+    "relationships": [
+      "Each Medication can contain one or more Active Substances",
+      "Each Active Substance can be found in multiple Medications",
+      "Some items (like bandages) have no active substances"
+    ]
+  },
+  "activeSubstances": [
+    { "id": "as-001", "name": "Ibuprofen" },
+    { "id": "as-002", "name": "Acetaminophen" },
+    { "id": "as-003", "name": "Pseudoephedrine" },
+    { "id": "as-004", "name": "Dextromethorphan" },
+    { "id": "as-005", "name": "Oxymetazoline" },
+    { "id": "as-006", "name": "Hydrocortisone" },
+    { "id": "as-007", "name": "Diphenhydramine" },
+    { "id": "as-008", "name": "Cetirizine" }
+  ],
+  "medications": [
+    {
+      "id": "med-001",
+      "name": "Advil",
+      "presentation": "pill",
+      "expirationDate": "2025-08-15",
+      "activeSubstanceIds": ["as-001"]
+    },
+    {
+      "id": "med-002",
+      "name": "Tylenol Extra Strength",
+      "presentation": "pill",
+      "expirationDate": "2026-03-20",
+      "activeSubstanceIds": ["as-002"]
+    },
+    {
+      "id": "med-003",
+      "name": "NyQuil Cold & Flu",
+      "presentation": "syrup",
+      "expirationDate": "2024-11-30",
+      "activeSubstanceIds": ["as-002", "as-004", "as-007"]
+    },
+    {
+      "id": "med-004",
+      "name": "Sudafed",
+      "presentation": "pill",
+      "expirationDate": "2025-01-10",
+      "activeSubstanceIds": ["as-003"]
+    },
+    {
+      "id": "med-005",
+      "name": "Afrin Nasal Spray",
+      "presentation": "nasal-spray",
+      "expirationDate": "2024-06-15",
+      "activeSubstanceIds": ["as-005"]
+    },
+    {
+      "id": "med-006",
+      "name": "Cortisone 10",
+      "presentation": "cream",
+      "expirationDate": "2025-12-01",
+      "activeSubstanceIds": ["as-006"]
+    },
+    {
+      "id": "med-007",
+      "name": "Zyrtec",
+      "presentation": "pill",
+      "expirationDate": "2026-07-22",
+      "activeSubstanceIds": ["as-008"]
+    },
+    {
+      "id": "med-008",
+      "name": "Children's Motrin",
+      "presentation": "syrup",
+      "expirationDate": "2025-04-18",
+      "activeSubstanceIds": ["as-001"]
+    },
+    {
+      "id": "med-009",
+      "name": "Band-Aid Flexible Fabric",
+      "presentation": "bandage",
+      "expirationDate": "2027-09-01",
+      "activeSubstanceIds": []
+    },
+    {
+      "id": "med-010",
+      "name": "Visine Eye Drops",
+      "presentation": "drops",
+      "expirationDate": "2024-02-28",
+      "activeSubstanceIds": []
+    }
+  ]
+}
