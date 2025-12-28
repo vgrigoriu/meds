@@ -64,7 +64,11 @@ export function MedicationRow({
   return (
     <div
       onClick={onSelect}
-      style={{ borderLeftWidth: '4px', borderLeftStyle: 'solid', borderLeftColor: isSelected ? '#14b8a6' : 'transparent' }}
+      style={{
+        borderLeftWidth: '4px',
+        borderLeftStyle: 'solid',
+        borderLeftColor: isSelected ? '#14b8a6' : 'transparent',
+      }}
       className={`
         group cursor-pointer transition-all duration-200 ease-out
         border-b border-slate-100 dark:border-slate-800

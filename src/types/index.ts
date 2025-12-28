@@ -4,6 +4,15 @@
 
 export type Presentation = 'pill' | 'syrup' | 'spray' | 'cream' | 'drops' | 'other'
 
+export const presentationLabels: Record<Presentation, string> = {
+  pill: 'Comprimat',
+  syrup: 'Sirop',
+  spray: 'Spray',
+  cream: 'Cremă',
+  drops: 'Picături',
+  other: 'Altele',
+}
+
 export interface ActiveSubstance {
   id: number
   name: string

@@ -1,10 +1,11 @@
 'use client'
 
 import { useMemo, useState, useRef, useEffect } from 'react'
-import { ArrowUpDown, ChevronDown, Check } from 'lucide-react'
+import { ArrowUpDown, ChevronDown, Check, Plus } from 'lucide-react'
 import type { Medication, ActiveSubstance } from '@/types'
 import { MedicationRow } from './MedicationRow'
 import { EmptyState } from './EmptyState'
+import { AddMedicationForm } from './AddMedicationForm'
 
 export type SortOption = 'expiration' | 'name'
 
@@ -34,6 +35,7 @@ export function InventoryList({
   onSelect,
 }: InventoryListProps) {
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
+  const [isAdding, setIsAdding] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
 
   // Close menu when clicking outside
@@ -46,6 +48,7 @@ export function InventoryList({
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
   // Filter medications based on search query
   const filteredMedications = useMemo(() => {
     if (!searchQuery.trim()) return medications
@@ -78,6 +81,39 @@ export function InventoryList({
     })
   }, [filteredMedications, sortBy])
 
+  // Handle up/down arrow keys for navigation
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (isAdding) return
+      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
+
+      // Don't interfere with input fields
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      event.preventDefault()
+
+      const currentIndex = selectedId
+        ? sortedMedications.findIndex(m => m.id === selectedId)
+        : -1
+
+      let newIndex: number
+      if (event.key === 'ArrowDown') {
+        newIndex = currentIndex < sortedMedications.length - 1 ? currentIndex + 1 : currentIndex
+      } else {
+        newIndex = currentIndex > 0 ? currentIndex - 1 : 0
+      }
+
+      if (sortedMedications[newIndex]) {
+        onSelect?.(sortedMedications[newIndex].id)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isAdding, selectedId, sortedMedications, onSelect])
+
   // For each medication, check if any of its substances match the search
   const medicationMatchesSubstance = useMemo(() => {
     if (!searchQuery.trim()) return new Set<number>()
@@ -101,7 +137,7 @@ export function InventoryList({
 
   return (
     <div className="h-full">
-      {/* Sort toggle - only show if there are medications */}
+      {/* Header bar - only show if there are medications */}
       {!isEmpty && (
         <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200 dark:border-slate-800">
           <span className="text-sm text-slate-500 dark:text-slate-400">
@@ -109,7 +145,18 @@ export function InventoryList({
             {searchQuery && ` pentru "${searchQuery}"`}
           </span>
 
-          <div className="relative" ref={sortMenuRef}>
+          <div className="flex items-center gap-2">
+            {/* Add button */}
+            <button
+              onClick={() => setIsAdding(true)}
+              className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              title="Adaugă medicament"
+            >
+              <Plus className="w-5 h-5" />
+            </button>
+
+            {/* Sort dropdown */}
+            <div className="relative" ref={sortMenuRef}>
             <button
               onClick={() => setSortMenuOpen(!sortMenuOpen)}
               className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-sm
@@ -141,8 +188,21 @@ export function InventoryList({
                 ))}
               </div>
             )}
+            </div>
           </div>
         </div>
+      )}
+
+      {/* Add medication form */}
+      {isAdding && (
+        <AddMedicationForm
+          activeSubstances={activeSubstances}
+          onCancel={() => setIsAdding(false)}
+          onSuccess={(medicationId) => {
+            setIsAdding(false)
+            onSelect?.(medicationId)
+          }}
+        />
       )}
 
       {/* Empty state */}
