@@ -1,0 +1,173 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "f1b2418a-e8f8-4841-a83c-8062d84d7ee6",
+  "prevId": "4ffa3f6e-254a-41d4-a078-89a8149a45ee",
+  "tables": {
+    "active_substances": {
+      "name": "active_substances",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "medication_substances": {
+      "name": "medication_substances",
+      "columns": {
+        "medication_id": {
+          "name": "medication_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "substance_id": {
+          "name": "substance_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "concentration": {
+          "name": "concentration",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "medication_substances_medication_id_medications_id_fk": {
+          "name": "medication_substances_medication_id_medications_id_fk",
+          "tableFrom": "medication_substances",
+          "tableTo": "medications",
+          "columnsFrom": [
+            "medication_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "medication_substances_substance_id_active_substances_id_fk": {
+          "name": "medication_substances_substance_id_active_substances_id_fk",
+          "tableFrom": "medication_substances",
+          "tableTo": "active_substances",
+          "columnsFrom": [
+            "substance_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "medication_substances_medication_id_substance_id_pk": {
+          "columns": [
+            "medication_id",
+            "substance_id"
+          ],
+          "name": "medication_substances_medication_id_substance_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "medications": {
+      "name": "medications",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "presentation": {
+          "name": "presentation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expiration_year": {
+          "name": "expiration_year",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expiration_month": {
+          "name": "expiration_month",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "deleted": {
+          "name": "deleted",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "valid_year": {
+          "name": "valid_year",
+          "value": "\"medications\".\"expiration_year\" >= 2000 AND \"medications\".\"expiration_year\" <= 2100"
+        },
+        "valid_month": {
+          "name": "valid_month",
+          "value": "\"medications\".\"expiration_month\" >= 1 AND \"medications\".\"expiration_month\" <= 12"
+        },
+        "valid_presentation": {
+          "name": "valid_presentation",
+          "value": "\"medications\".\"presentation\" IN ('pill', 'syrup', 'spray', 'cream', 'drops', 'other')"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

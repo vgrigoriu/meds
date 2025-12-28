@@ -1,10 +1,12 @@
 import { db } from './index'
 import { medications, activeSubstances, medicationSubstances } from './schema'
-import { eq } from 'drizzle-orm'
+import { eq, isNull, or } from 'drizzle-orm'
 import type { Medication, ActiveSubstance, Presentation } from '@/types'
 
 export async function getMedications(): Promise<Medication[]> {
-  const meds = db.select().from(medications).all()
+  const meds = db.select().from(medications).where(
+    or(isNull(medications.deleted), eq(medications.deleted, false))
+  ).all()
   const relations = db.select().from(medicationSubstances).all()
 
   return meds.map((med) => ({

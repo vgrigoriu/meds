@@ -11,10 +11,12 @@ export const medications = sqliteTable(
     }).notNull(),
     expirationYear: integer('expiration_year').notNull(),
     expirationMonth: integer('expiration_month').notNull(),
+    deleted: integer('deleted', { mode: 'boolean' }),
   },
   (table) => [
     check('valid_year', sql`${table.expirationYear} >= 2000 AND ${table.expirationYear} <= 2100`),
     check('valid_month', sql`${table.expirationMonth} >= 1 AND ${table.expirationMonth} <= 12`),
+    check('valid_presentation', sql`${table.presentation} IN ('pill', 'syrup', 'spray', 'cream', 'drops', 'other')`),
   ]
 )
 
