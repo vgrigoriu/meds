@@ -12,7 +12,7 @@ interface InventoryClientProps {
 
 export function InventoryClient({ user }: InventoryClientProps) {
   const handleLogout = () => {
-    signOut({ callbackUrl: '/login' })
+    signOut({ callbackUrl: '/login?signedOut=true' })
   }
 
   const handleSearch = (query: string) => {

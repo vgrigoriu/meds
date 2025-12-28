@@ -1,20 +1,34 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
-import { useSearchParams } from 'next/navigation'
 import { LoginScreen } from '@/components/users/LoginScreen'
+import { Toast } from '@/components/Toast'
 import type { OAuthProvider, AuthError } from '@/types'
 
-export function LoginClient() {
-  const searchParams = useSearchParams()
-  const errorParam = searchParams.get('error')
+interface LoginClientProps {
+  error?: string
+  signedOut: boolean
+}
+
+export function LoginClient({ error: errorParam, signedOut }: LoginClientProps) {
+  const [showToast, setShowToast] = useState(signedOut)
+
+  const toastDuration = 4000 // 2s visible + 2s fade
+
+  useEffect(() => {
+    if (signedOut) {
+      const timer = setTimeout(() => setShowToast(false), toastDuration + 500)
+      return () => clearTimeout(timer)
+    }
+  }, [signedOut])
 
   const error: AuthError | null = errorParam
     ? {
         message:
           errorParam === 'AccessDenied'
-            ? "You don't have access to this app. Contact the administrator if you think this is a mistake."
-            : 'An error occurred during sign in. Please try again.',
+            ? 'Nu ești printre cei aleși.'
+            : 'S-a produs o distorsiune a degajamentului.',
       }
     : null
 
@@ -22,5 +36,10 @@ export function LoginClient() {
     signIn(provider, { callbackUrl: '/inventory' })
   }
 
-  return <LoginScreen error={error} onLogin={handleLogin} />
+  return (
+    <>
+      <LoginScreen error={error} onLogin={handleLogin} />
+      {showToast && <Toast message="De ce-ai plecat? De ce-ai mai fi rămas?" duration={toastDuration} />}
+    </>
+  )
 }
