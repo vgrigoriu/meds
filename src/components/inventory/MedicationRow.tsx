@@ -2,6 +2,7 @@
 
 import type { Medication, ActiveSubstance } from '@/types'
 import { PresentationIcon } from './PresentationIcon'
+import { AlertTriangle } from 'lucide-react'
 
 interface MedicationRowProps {
   medication: Medication
@@ -63,6 +64,7 @@ export function MedicationRow({
   return (
     <div
       onClick={onSelect}
+      style={{ borderLeftWidth: '4px', borderLeftStyle: 'solid', borderLeftColor: isSelected ? '#14b8a6' : 'transparent' }}
       className={`
         group cursor-pointer transition-all duration-200 ease-out
         border-b border-slate-100 dark:border-slate-800
@@ -70,45 +72,32 @@ export function MedicationRow({
           ? 'bg-teal-50 dark:bg-teal-950/30'
           : 'hover:bg-slate-50 dark:hover:bg-slate-900/50'
         }
-        ${expired ? 'bg-amber-50/50 dark:bg-amber-950/20' : ''}
       `}
     >
       {/* Main row content */}
       <div className="flex items-center gap-3 px-4 py-3">
         {/* Presentation icon */}
-        <div className={`
-          flex-shrink-0 p-2 rounded-lg
-          ${expired
-            ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
-            : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
-          }
-        `}>
+        <div className="flex-shrink-0 p-2 rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
           <PresentationIcon presentation={medication.presentation} />
         </div>
 
         {/* Name */}
         <div className="flex-1 min-w-0">
-          <p className={`
-            font-medium truncate
-            ${expired
-              ? 'text-amber-900 dark:text-amber-200'
-              : 'text-slate-900 dark:text-slate-100'
-            }
-          `}>
+          <p className="font-medium truncate text-slate-900 dark:text-slate-100">
             {medication.name}
           </p>
         </div>
 
         {/* Expiration date */}
         <div className={`
-          flex-shrink-0 text-sm font-medium
+          flex-shrink-0 text-sm font-medium flex items-center gap-1.5
           ${expired
             ? 'text-amber-600 dark:text-amber-400'
             : 'text-slate-500 dark:text-slate-400'
           }
         `}>
           {expired && (
-            <span className="mr-1 text-xs uppercase tracking-wide">Expirat</span>
+            <AlertTriangle className="w-4 h-4" />
           )}
           {formatExpiration(medication.expirationYear, medication.expirationMonth)}
         </div>
