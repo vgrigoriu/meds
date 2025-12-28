@@ -4,9 +4,16 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Meds",
-  description: "Medication inventory for your household",
+  description: "Inventar de medicamente pentru gospodăria ta",
   icons: {
     icon: "/favicon.svg",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Meds",
   },
 };
 
