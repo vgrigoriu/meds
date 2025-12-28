@@ -23,7 +23,7 @@ Before starting, ask me about:
 
 I need you to implement the **Inventory** section for Meds.
 
-Please review:
+Please review the following files in `product-plan`:
 - `product-overview.md` — Context about the app
 - `instructions/incremental/02-inventory.md` — Implementation steps
 - `sections/inventory/` — Components, types, sample data, tests

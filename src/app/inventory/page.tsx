@@ -1,4 +1,5 @@
 import { auth } from '@/auth'
+import { getMedications, getActiveSubstances } from '@/db/queries'
 import { InventoryClient } from './client'
 
 export default async function InventoryPage() {
@@ -11,5 +12,14 @@ export default async function InventoryPage() {
       }
     : undefined
 
-  return <InventoryClient user={user} />
+  const medications = await getMedications()
+  const activeSubstances = await getActiveSubstances()
+
+  return (
+    <InventoryClient
+      user={user}
+      medications={medications}
+      activeSubstances={activeSubstances}
+    />
+  )
 }

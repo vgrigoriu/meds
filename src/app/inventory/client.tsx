@@ -1,34 +1,44 @@
 'use client'
 
+import { useState } from 'react'
 import { signOut } from 'next-auth/react'
 import { AppShell } from '@/components/shell'
+import { InventoryList, SortOption } from '@/components/inventory'
+import type { Medication, ActiveSubstance } from '@/types'
 
 interface InventoryClientProps {
   user?: {
     name: string
     avatarUrl?: string
   }
+  medications: Medication[]
+  activeSubstances: ActiveSubstance[]
 }
 
-export function InventoryClient({ user }: InventoryClientProps) {
+export function InventoryClient({
+  user,
+  medications,
+  activeSubstances,
+}: InventoryClientProps) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState<SortOption>('expiration')
+  const [selectedId, setSelectedId] = useState<number | null>(null)
+
   const handleLogout = () => {
     signOut({ callbackUrl: '/login?signedOut=true' })
   }
 
-  const handleSearch = (query: string) => {
-    console.log('Search:', query)
-  }
-
   return (
-    <AppShell user={user} onLogout={handleLogout} onSearch={handleSearch}>
-      <div className="p-6">
-        <h2 className="font-heading text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
-          Medication Inventory
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400">
-          Your medications will appear here. This page will be populated in the Inventory milestone.
-        </p>
-      </div>
+    <AppShell user={user} onLogout={handleLogout} onSearch={setSearchQuery}>
+      <InventoryList
+        medications={medications}
+        activeSubstances={activeSubstances}
+        searchQuery={searchQuery}
+        sortBy={sortBy}
+        selectedId={selectedId}
+        onSortChange={setSortBy}
+        onSelect={setSelectedId}
+      />
     </AppShell>
   )
 }

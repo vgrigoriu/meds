@@ -2,25 +2,25 @@
 // Data Types
 // =============================================================================
 
-export type Presentation =
-  | 'pill'
-  | 'syrup'
-  | 'nasal-spray'
-  | 'cream'
-  | 'drops'
-  | 'bandage'
+export type Presentation = 'pill' | 'syrup' | 'spray' | 'cream' | 'drops' | 'other'
 
 export interface ActiveSubstance {
-  id: string
+  id: number
   name: string
 }
 
+export interface MedicationSubstance {
+  substanceId: number
+  concentration: string | null
+}
+
 export interface Medication {
-  id: string
+  id: number
   name: string
   presentation: Presentation
-  expirationDate: string
-  activeSubstanceIds: string[]
+  expirationYear: number
+  expirationMonth: number
+  substances: MedicationSubstance[]
 }
 
 export interface User {

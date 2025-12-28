@@ -4,7 +4,10 @@
       "Bash(npm install lucide-react)",
       "Bash(npm run build)",
       "Bash(rsvg-convert:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "WebFetch(domain:fly.io)",
+      "Bash(npm test)",
+      "WebFetch(domain:lucide.dev)"
     ]
   }
 }
