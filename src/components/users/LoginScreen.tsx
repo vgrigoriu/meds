@@ -2,6 +2,7 @@
 
 import { Loader2 } from 'lucide-react'
 import type { OAuthProvider, AuthError } from '@/types'
+import { Logo } from '@/components/Logo'
 
 // Google icon component
 function GoogleIcon({ className }: { className?: string }) {
@@ -79,6 +80,7 @@ export function LoginScreen({ error, isLoading, onLogin }: LoginScreenProps) {
       <div className="relative w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
+          <Logo size="lg" className="mx-auto mb-4" />
           <h1 className="font-heading text-4xl font-bold text-slate-900 dark:text-slate-100 mb-2">
             Meds
           </h1>
