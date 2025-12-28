@@ -33,33 +33,29 @@ interface OAuthButtonProps {
 function OAuthButton({ provider, onClick, disabled }: OAuthButtonProps) {
   const config = {
     google: {
-      label: 'Continue with Google',
       icon: GoogleIcon,
       className: 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 dark:border-slate-600',
     },
     github: {
-      label: 'Continue with GitHub',
       icon: GitHubIcon,
       className: 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900',
     },
   }
 
-  const { label, icon: Icon, className } = config[provider]
+  const { icon: Icon, className } = config[provider]
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className={`
-        w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl
-        font-medium text-sm
+        w-14 h-14 flex items-center justify-center rounded-xl
         transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
         ${className}
       `}
     >
-      <Icon className="w-5 h-5" />
-      {label}
+      <Icon className="w-6 h-6" />
     </button>
   )
 }
@@ -87,12 +83,12 @@ export function LoginScreen({ error, isLoading, onLogin }: LoginScreenProps) {
             Meds
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm">
-            Track your medications
+            Cioc, cioc! Cine-i?
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 p-6 border border-slate-100 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 px-8 py-5 border border-slate-100 dark:border-slate-800 max-w-fit mx-auto">
           {/* Error message */}
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
@@ -111,7 +107,7 @@ export function LoginScreen({ error, isLoading, onLogin }: LoginScreenProps) {
 
           {/* OAuth buttons */}
           {!isLoading && (
-            <div className="space-y-3">
+            <div className="flex justify-center gap-4">
               <OAuthButton
                 provider="google"
                 onClick={() => onLogin?.('google')}
@@ -124,8 +120,8 @@ export function LoginScreen({ error, isLoading, onLogin }: LoginScreenProps) {
           )}
 
           {/* Footer note */}
-          <p className="mt-6 text-center text-xs text-slate-400 dark:text-slate-500">
-            Access is restricted to authorized users only
+          <p className="mt-4 text-center text-xs text-slate-400 dark:text-slate-500">
+            Doar pentru cei aleși
           </p>
         </div>
       </div>
