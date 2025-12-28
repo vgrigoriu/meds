@@ -36,10 +36,22 @@ export function SubstanceAutocomplete({
 }: SubstanceAutocompleteProps) {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const filtered = filterSubstances(substances, query)
   const showAddOption = shouldShowAddOption(substances, query)
+
+  // Build list of options: "add new" first (if shown), then filtered substances
+  const options = [
+    ...(showAddOption ? [{ type: 'add' as const, name: query.trim() }] : []),
+    ...filtered.map((s) => ({ type: 'existing' as const, name: s.name })),
+  ]
+
+  // Reset highlight when options change
+  useEffect(() => {
+    setHighlightedIndex(-1)
+  }, [query, substances.length])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -55,20 +67,49 @@ export function SubstanceAutocomplete({
     onSelect(name)
     setQuery('')
     setIsOpen(false)
+    setHighlightedIndex(-1)
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter' && query.trim()) {
-      e.preventDefault()
-      // If there's an exact match or filtered results, select first result
-      // Otherwise, add as new
-      if (filtered.length > 0 && !showAddOption) {
-        handleSelect(filtered[0].name)
-      } else if (showAddOption) {
-        handleSelect(query.trim())
-      } else if (filtered.length > 0) {
-        handleSelect(filtered[0].name)
+    if (!isOpen || options.length === 0) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        setIsOpen(true)
+        setHighlightedIndex(0)
+        e.preventDefault()
       }
+      return
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault()
+        setHighlightedIndex((prev) =>
+          prev < options.length - 1 ? prev + 1 : prev
+        )
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : 0))
+        break
+      case 'Enter':
+        e.preventDefault()
+        if (highlightedIndex >= 0 && options[highlightedIndex]) {
+          handleSelect(options[highlightedIndex].name)
+        } else if (options.length > 0) {
+          handleSelect(options[0].name)
+        }
+        break
+      case 'Escape':
+        if (isOpen) {
+          e.preventDefault() // Signal to parent that we handled it
+          setIsOpen(false)
+          setHighlightedIndex(-1)
+        }
+        break
+      case 'Tab':
+        setIsOpen(false)
+        setHighlightedIndex(-1)
+        break
     }
   }
 
@@ -87,26 +128,26 @@ export function SubstanceAutocomplete({
         className="w-full px-3 py-2 text-base bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
       />
 
-      {isOpen && (filtered.length > 0 || showAddOption) && (
+      {isOpen && options.length > 0 && (
         <div className="absolute z-10 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-          {showAddOption && (
+          {options.map((option, index) => (
             <button
               type="button"
-              onClick={() => handleSelect(query.trim())}
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-left text-teal-600 dark:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+              key={option.type === 'add' ? '__add__' : option.name}
+              tabIndex={-1}
+              onClick={() => handleSelect(option.name)}
+              className={`w-full px-3 py-2 text-sm text-left ${
+                option.type === 'add'
+                  ? 'flex items-center gap-2 text-teal-600 dark:text-teal-400'
+                  : 'text-slate-700 dark:text-slate-300'
+              } ${
+                highlightedIndex === index
+                  ? 'bg-slate-100 dark:bg-slate-700'
+                  : 'hover:bg-slate-100 dark:hover:bg-slate-700'
+              }`}
             >
-              <Plus className="w-4 h-4" />
-              Adaugă „{query.trim()}"
-            </button>
-          )}
-          {filtered.map((substance) => (
-            <button
-              type="button"
-              key={substance.id}
-              onClick={() => handleSelect(substance.name)}
-              className="w-full px-3 py-2 text-sm text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-            >
-              {substance.name}
+              {option.type === 'add' && <Plus className="w-4 h-4" />}
+              {option.type === 'add' ? `Adaugă „${option.name}"` : option.name}
             </button>
           ))}
         </div>

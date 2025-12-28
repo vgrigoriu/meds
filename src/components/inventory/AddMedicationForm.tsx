@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { X } from 'lucide-react'
 import { presentationLabels, type ActiveSubstance, type Presentation } from '@/types'
 import { SubstanceAutocomplete } from './SubstanceAutocomplete'
@@ -48,6 +48,22 @@ export function AddMedicationForm({
   const [substances, setSubstances] = useState<SubstanceEntry[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [focusConcentrationIndex, setFocusConcentrationIndex] = useState<number | null>(null)
+  const nameInputRef = useRef<HTMLInputElement>(null)
+  const concentrationRefs = useRef<(HTMLInputElement | null)[]>([])
+
+  // Focus name input when form opens
+  useEffect(() => {
+    nameInputRef.current?.focus()
+  }, [])
+
+  // Focus concentration input when a new substance is added
+  useEffect(() => {
+    if (focusConcentrationIndex !== null && concentrationRefs.current[focusConcentrationIndex]) {
+      concentrationRefs.current[focusConcentrationIndex]?.focus()
+      setFocusConcentrationIndex(null)
+    }
+  }, [focusConcentrationIndex, substances])
 
   // Filter out already-added substances from autocomplete
   const availableSubstances = activeSubstances.filter(
@@ -56,7 +72,9 @@ export function AddMedicationForm({
 
   function handleAddSubstance(substanceName: string) {
     if (!substances.some((s) => s.name.toLowerCase() === substanceName.toLowerCase())) {
+      const newIndex = substances.length
       setSubstances([...substances, { name: substanceName, concentration: '' }])
+      setFocusConcentrationIndex(newIndex)
     }
   }
 
@@ -107,6 +125,7 @@ export function AddMedicationForm({
             Nume
           </label>
           <input
+            ref={nameInputRef}
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -180,14 +199,22 @@ export function AddMedicationForm({
                     {substance.name}
                   </span>
                   <input
+                    ref={(el) => { concentrationRefs.current[index] = el }}
                     type="text"
                     value={substance.concentration}
                     onChange={(e) => handleConcentrationChange(index, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Backspace' && (e.ctrlKey || e.metaKey)) {
+                        e.preventDefault()
+                        handleRemoveSubstance(index)
+                      }
+                    }}
                     placeholder="Concentrație"
                     className="w-32 px-2 py-1 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded focus:border-teal-500 dark:focus:border-teal-400 outline-none"
                   />
                   <button
                     type="button"
+                    tabIndex={-1}
                     onClick={() => handleRemoveSubstance(index)}
                     className="p-1 text-slate-400 hover:text-red-500"
                   >

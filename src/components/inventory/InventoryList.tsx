@@ -81,16 +81,40 @@ export function InventoryList({
     })
   }, [filteredMedications, sortBy])
 
-  // Handle up/down arrow keys for navigation
+  // Handle keyboard shortcuts
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (isAdding) return
-      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
+      const target = event.target
+      const isInInput = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement
 
-      // Don't interfere with input fields
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      // Esc - close add form (but not if already handled by a child component)
+      if (event.key === 'Escape' && isAdding && !event.defaultPrevented) {
+        event.preventDefault()
+        setIsAdding(false)
         return
       }
+
+      // Don't handle other shortcuts when in input fields
+      if (isInInput) return
+
+      // + - open add form
+      if (event.key === '+' && !isAdding) {
+        event.preventDefault()
+        setIsAdding(true)
+        return
+      }
+
+      // / - focus search bar
+      if (event.key === '/') {
+        event.preventDefault()
+        const searchInput = document.querySelector('input[type="text"][placeholder*="Caută"]') as HTMLInputElement
+        searchInput?.focus()
+        return
+      }
+
+      // Arrow navigation (only when not adding)
+      if (isAdding) return
+      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
 
       event.preventDefault()
 
