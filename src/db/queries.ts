@@ -94,3 +94,17 @@ export async function createMedication(input: CreateMedicationInput): Promise<Me
 
   return result
 }
+
+export function softDeleteMedication(id: number): void {
+  db.update(medications)
+    .set({ deleted: true })
+    .where(eq(medications.id, id))
+    .run()
+}
+
+export function restoreMedication(id: number): void {
+  db.update(medications)
+    .set({ deleted: false })
+    .where(eq(medications.id, id))
+    .run()
+}

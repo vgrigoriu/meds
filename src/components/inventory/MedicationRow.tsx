@@ -2,15 +2,18 @@
 
 import type { Medication, ActiveSubstance } from '@/types'
 import { PresentationIcon } from './PresentationIcon'
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, Trash2, Undo2 } from 'lucide-react'
 
 interface MedicationRowProps {
   medication: Medication
   activeSubstances: ActiveSubstance[]
   isSelected?: boolean
+  isPendingDelete?: boolean
   showSubstances?: boolean
   searchQuery?: string
   onSelect?: () => void
+  onDelete?: () => void
+  onUndo?: () => void
 }
 
 function formatExpiration(year: number, month: number): string {
@@ -48,9 +51,12 @@ export function MedicationRow({
   medication,
   activeSubstances,
   isSelected = false,
+  isPendingDelete = false,
   showSubstances = false,
   searchQuery = '',
   onSelect,
+  onDelete,
+  onUndo,
 }: MedicationRowProps) {
   const expired = isExpired(medication.expirationYear, medication.expirationMonth)
 
@@ -63,15 +69,19 @@ export function MedicationRow({
 
   return (
     <div
-      onClick={onSelect}
+      onClick={isPendingDelete ? undefined : onSelect}
       style={{
         borderLeftWidth: '4px',
         borderLeftStyle: 'solid',
         borderLeftColor: isSelected ? '#14b8a6' : 'transparent',
       }}
       className={`
-        group cursor-pointer transition-all duration-200 ease-out
+        group transition-all duration-200 ease-out
         border-b border-slate-100 dark:border-slate-800
+        ${isPendingDelete
+          ? 'cursor-default'
+          : 'cursor-pointer'
+        }
         ${isSelected
           ? 'bg-teal-50 dark:bg-teal-950/30'
           : 'hover:bg-slate-50 dark:hover:bg-slate-900/50'
@@ -87,7 +97,10 @@ export function MedicationRow({
 
         {/* Name */}
         <div className="flex-1 min-w-0">
-          <p className="font-medium truncate text-slate-900 dark:text-slate-100">
+          <p
+            style={{ textDecoration: isPendingDelete ? 'line-through' : 'none' }}
+            className="font-medium truncate text-slate-900 dark:text-slate-100"
+          >
             {medication.name}
           </p>
         </div>
@@ -105,6 +118,32 @@ export function MedicationRow({
           )}
           {formatExpiration(medication.expirationYear, medication.expirationMonth)}
         </div>
+
+        {/* Delete/Undo button - visible when selected or pending delete */}
+        {isSelected && isPendingDelete && onUndo && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onUndo()
+            }}
+            className="flex-shrink-0 p-2 rounded-lg text-slate-400 hover:text-teal-500 hover:bg-teal-50 dark:hover:text-teal-400 dark:hover:bg-teal-950/30 transition-colors"
+            title="Anulează"
+          >
+            <Undo2 className="w-4 h-4" />
+          </button>
+        )}
+        {isSelected && !isPendingDelete && onDelete && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete()
+            }}
+            className="flex-shrink-0 p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-950/30 transition-colors"
+            title="Șterge"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Substances shown when searching by substance OR when selected */}

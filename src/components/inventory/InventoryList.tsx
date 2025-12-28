@@ -15,9 +15,12 @@ interface InventoryListProps {
   searchQuery?: string
   sortBy?: SortOption
   selectedId?: number | null
+  pendingDeleteId?: number
   onSearchChange?: (query: string) => void
   onSortChange?: (sortBy: SortOption) => void
   onSelect?: (id: number | null) => void
+  onDelete?: (id: number) => void
+  onUndo?: () => void
 }
 
 const sortOptions: { value: SortOption; label: string }[] = [
@@ -31,8 +34,11 @@ export function InventoryList({
   searchQuery = '',
   sortBy = 'expiration',
   selectedId,
+  pendingDeleteId,
   onSortChange,
   onSelect,
+  onDelete,
+  onUndo,
 }: InventoryListProps) {
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
@@ -112,6 +118,13 @@ export function InventoryList({
         return
       }
 
+      // Delete - delete selected medication
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedId && !isAdding) {
+        event.preventDefault()
+        onDelete?.(selectedId)
+        return
+      }
+
       // Arrow navigation (only when not adding)
       if (isAdding) return
       if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
@@ -136,7 +149,7 @@ export function InventoryList({
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isAdding, selectedId, sortedMedications, onSelect])
+  }, [isAdding, selectedId, sortedMedications, onSelect, onDelete])
 
   // For each medication, check if any of its substances match the search
   const medicationMatchesSubstance = useMemo(() => {
@@ -250,11 +263,14 @@ export function InventoryList({
               medication={medication}
               activeSubstances={activeSubstances}
               isSelected={selectedId === medication.id}
+              isPendingDelete={pendingDeleteId === medication.id}
               showSubstances={medicationMatchesSubstance.has(medication.id)}
               searchQuery={searchQuery}
               onSelect={() =>
                 onSelect?.(selectedId === medication.id ? null : medication.id)
               }
+              onDelete={() => onDelete?.(medication.id)}
+              onUndo={onUndo}
             />
           ))}
         </div>

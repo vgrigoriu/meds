@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { createMedication, type CreateMedicationInput } from '@/db/queries'
+import { createMedication, softDeleteMedication, restoreMedication, type CreateMedicationInput } from '@/db/queries'
 import type { Presentation } from '@/types'
 
 const VALID_PRESENTATIONS: Presentation[] = ['pill', 'syrup', 'spray', 'cream', 'drops', 'other']
@@ -47,5 +47,32 @@ export async function addMedication(input: CreateMedicationInput): Promise<AddMe
   } catch (error) {
     console.error('Failed to create medication:', error)
     return { success: false, error: 'A apărut o eroare la salvare' }
+  }
+}
+
+interface DeleteMedicationResult {
+  success: boolean
+  error?: string
+}
+
+export async function deleteMedication(id: number): Promise<DeleteMedicationResult> {
+  try {
+    softDeleteMedication(id)
+    revalidatePath('/inventory')
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to delete medication:', error)
+    return { success: false, error: 'A apărut o eroare la ștergere' }
+  }
+}
+
+export async function undoDeleteMedication(id: number): Promise<DeleteMedicationResult> {
+  try {
+    restoreMedication(id)
+    revalidatePath('/inventory')
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to restore medication:', error)
+    return { success: false, error: 'A apărut o eroare la restaurare' }
   }
 }
