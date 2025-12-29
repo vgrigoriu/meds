@@ -125,7 +125,7 @@ export function SubstanceAutocomplete({
         onFocus={() => setIsOpen(true)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="w-full px-3 py-2 text-base bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
+        className="w-full px-3 py-2 text-base text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
       />
 
       {isOpen && options.length > 0 && (

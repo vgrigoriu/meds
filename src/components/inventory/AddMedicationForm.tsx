@@ -116,7 +116,7 @@ export function AddMedicationForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-4"
+      className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-4"
     >
       <div className="space-y-4 max-w-md">
         {/* Name */}
@@ -130,7 +130,7 @@ export function AddMedicationForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-3 py-2 text-base bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
+            className="w-full px-3 py-2 text-base text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
           />
         </div>
 
@@ -142,7 +142,7 @@ export function AddMedicationForm({
           <select
             value={presentation}
             onChange={(e) => setPresentation(e.target.value as Presentation)}
-            className="w-full px-3 py-2 text-base bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
+            className="w-full px-3 py-2 text-base text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
           >
             {presentationOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -162,7 +162,7 @@ export function AddMedicationForm({
               value={expirationMonth}
               onChange={(e) => setExpirationMonth(e.target.value)}
               required
-              className="px-3 py-2 text-base bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
+              className="px-3 py-2 text-base text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
             >
               <option value="">Luna</option>
               {monthOptions.map((opt) => (
@@ -179,7 +179,7 @@ export function AddMedicationForm({
               min="2000"
               max="2100"
               required
-              className="w-28 px-3 py-2 text-base bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
+              className="w-28 px-3 py-2 text-base text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-teal-500 dark:focus:border-teal-400 outline-none"
             />
           </div>
         </div>
@@ -210,7 +210,7 @@ export function AddMedicationForm({
                       }
                     }}
                     placeholder="Concentrație"
-                    className="w-32 px-2 py-1 text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded focus:border-teal-500 dark:focus:border-teal-400 outline-none"
+                    className="w-32 px-2 py-1 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded focus:border-teal-500 dark:focus:border-teal-400 outline-none"
                   />
                   <button
                     type="button"
