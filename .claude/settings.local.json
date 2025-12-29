@@ -11,7 +11,8 @@
       "Bash(sqlite3:*)",
       "Bash(cat:*)",
       "WebFetch(domain:vercel.com)",
-      "WebFetch(domain:orm.drizzle.team)"
+      "WebFetch(domain:orm.drizzle.team)",
+      "Bash(npx markdownlint-cli:*)"
     ]
   }
 }
