@@ -30,7 +30,7 @@ export const medicationSubstances = sqliteTable(
   {
     medicationId: integer('medication_id')
       .notNull()
-      .references(() => medications.id, { onDelete: 'cascade' }),
+      .references(() => medications.id, { onDelete: 'restrict' }),
     substanceId: integer('substance_id')
       .notNull()
       .references(() => activeSubstances.id, { onDelete: 'restrict' }),

@@ -9,7 +9,9 @@
       "Bash(npm test)",
       "WebFetch(domain:lucide.dev)",
       "Bash(sqlite3:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "WebFetch(domain:vercel.com)",
+      "WebFetch(domain:orm.drizzle.team)"
     ]
   }
 }
