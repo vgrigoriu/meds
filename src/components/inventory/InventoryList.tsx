@@ -244,7 +244,7 @@ export const InventoryList = forwardRef<InventoryListHandle, InventoryListProps>
       )}
 
       {/* Empty state */}
-      {isEmpty && <EmptyState onAdd={() => onSelect?.(null)} />}
+      {isEmpty && <EmptyState onAdd={() => setIsAdding(true)} />}
 
       {/* No results state */}
       {noResults && (
