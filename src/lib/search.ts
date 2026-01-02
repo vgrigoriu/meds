@@ -9,10 +9,28 @@ export interface MatchResult {
   spans: MatchSpan[]
 }
 
+// Remove diacritics using Unicode NFD normalization
+function removeDiacritics(str: string): string {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+
+// Check if a string contains diacritics
+function hasDiacritics(str: string): boolean {
+  return /[\u0300-\u036f]/u.test(str.normalize('NFD'))
+}
+
 // Core matching function - single source of truth
 export function matchText(text: string, query: string): MatchResult | null {
   if (!query.trim()) return null
-  const index = text.toLowerCase().indexOf(query.toLowerCase())
+
+  const lowerQuery = query.toLowerCase()
+  const lowerText = text.toLowerCase()
+
+  // If query has no diacritics, search in normalized text
+  // If query has diacritics, search in original text (exact match)
+  const searchText = hasDiacritics(query) ? lowerText : removeDiacritics(lowerText)
+
+  const index = searchText.indexOf(lowerQuery)
   if (index === -1) return null
   return { spans: [{ start: index, length: query.length }] }
 }

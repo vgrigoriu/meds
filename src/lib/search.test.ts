@@ -30,6 +30,22 @@ describe('matchText', () => {
     expect(matchText('paracetamol', 'PARA')).toEqual({ spans: [{ start: 0, length: 4 }] })
     expect(matchText('PARACETAMOL', 'Para')).toEqual({ spans: [{ start: 0, length: 4 }] })
   })
+
+  it('matches text with diacritics when query has no diacritics', () => {
+    expect(matchText('Aspirină', 'aspirina')).toEqual({ spans: [{ start: 0, length: 8 }] })
+    expect(matchText('Aspirină', 'rina')).toEqual({ spans: [{ start: 4, length: 4 }] })
+    expect(matchText('Șampon', 'sampon')).toEqual({ spans: [{ start: 0, length: 6 }] })
+  })
+
+  it('does not match text without diacritics when query has diacritics', () => {
+    expect(matchText('sampon', 'șampon')).toBeNull()
+    expect(matchText('Aspirina', 'ină')).toBeNull()
+  })
+
+  it('matches text with diacritics when query has same diacritics', () => {
+    expect(matchText('Aspirină', 'rină')).toEqual({ spans: [{ start: 4, length: 4 }] })
+    expect(matchText('Șampon', 'Șam')).toEqual({ spans: [{ start: 0, length: 3 }] })
+  })
 })
 
 describe('MedicationMatcher', () => {
