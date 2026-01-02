@@ -12,7 +12,8 @@
       "Bash(cat:*)",
       "WebFetch(domain:vercel.com)",
       "WebFetch(domain:orm.drizzle.team)",
-      "Bash(npx markdownlint-cli:*)"
+      "Bash(npx markdownlint-cli:*)",
+      "Bash(npm test:*)"
     ]
   }
 }

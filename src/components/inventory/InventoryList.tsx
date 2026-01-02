@@ -3,6 +3,7 @@
 import { useMemo, useState, useRef, useEffect } from 'react'
 import { ArrowUpDown, ChevronDown, Check, Plus } from 'lucide-react'
 import type { Medication, ActiveSubstance } from '@/types'
+import { MedicationMatcher } from '@/lib/search'
 import { MedicationRow } from './MedicationRow'
 import { EmptyState } from './EmptyState'
 import { AddMedicationForm } from './AddMedicationForm'
@@ -55,35 +56,40 @@ export function InventoryList({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Filter medications based on search query
-  const filteredMedications = useMemo(() => {
-    if (!searchQuery.trim()) return medications
+  // Create matchers for each medication
+  const medicationsWithMatchers = useMemo(() => {
+    return medications.map((med) => {
+      const substances = med.substances
+        .map((ms) => {
+          const s = activeSubstances.find((s) => s.id === ms.substanceId)
+          return s ? { name: s.name, concentration: ms.concentration } : null
+        })
+        .filter((s): s is { name: string; concentration: string | null } => s !== null)
 
-    const query = searchQuery.toLowerCase()
-    return medications.filter((med) => {
-      // Match by medication name
-      if (med.name.toLowerCase().includes(query)) return true
-
-      // Match by active substance name
-      const substanceNames = med.substances
-        .map((ms) => activeSubstances.find((s) => s.id === ms.substanceId)?.name?.toLowerCase())
-        .filter(Boolean)
-
-      return substanceNames.some((name) => name?.includes(query))
+      const matcher = new MedicationMatcher(med.name, substances, searchQuery)
+      return { medication: med, matcher }
     })
   }, [medications, activeSubstances, searchQuery])
+
+  // Filter medications based on search query
+  const filteredMedications = useMemo(() => {
+    if (!searchQuery.trim()) return medicationsWithMatchers
+    return medicationsWithMatchers.filter(({ matcher }) => matcher.matches())
+  }, [medicationsWithMatchers, searchQuery])
 
   // Sort medications
   const sortedMedications = useMemo(() => {
     return [...filteredMedications].sort((a, b) => {
+      const medA = a.medication
+      const medB = b.medication
       if (sortBy === 'expiration') {
         // Compare by year first, then by month
-        if (a.expirationYear !== b.expirationYear) {
-          return a.expirationYear - b.expirationYear
+        if (medA.expirationYear !== medB.expirationYear) {
+          return medA.expirationYear - medB.expirationYear
         }
-        return a.expirationMonth - b.expirationMonth
+        return medA.expirationMonth - medB.expirationMonth
       }
-      return a.name.localeCompare(b.name)
+      return medA.name.localeCompare(medB.name)
     })
   }, [filteredMedications, sortBy])
 
@@ -132,7 +138,7 @@ export function InventoryList({
       event.preventDefault()
 
       const currentIndex = selectedId
-        ? sortedMedications.findIndex(m => m.id === selectedId)
+        ? sortedMedications.findIndex(({ medication }) => medication.id === selectedId)
         : -1
 
       let newIndex: number
@@ -143,31 +149,13 @@ export function InventoryList({
       }
 
       if (sortedMedications[newIndex]) {
-        onSelect?.(sortedMedications[newIndex].id)
+        onSelect?.(sortedMedications[newIndex].medication.id)
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isAdding, selectedId, sortedMedications, onSelect, onDelete])
-
-  // For each medication, check if any of its substances match the search
-  const medicationMatchesSubstance = useMemo(() => {
-    if (!searchQuery.trim()) return new Set<number>()
-    const query = searchQuery.toLowerCase()
-
-    const matchingIds = new Set<number>()
-    for (const med of medications) {
-      const hasMatchingSubstance = med.substances.some((ms) => {
-        const substance = activeSubstances.find((s) => s.id === ms.substanceId)
-        return substance?.name.toLowerCase().includes(query)
-      })
-      if (hasMatchingSubstance) {
-        matchingIds.add(med.id)
-      }
-    }
-    return matchingIds
-  }, [medications, activeSubstances, searchQuery])
 
   const isEmpty = medications.length === 0
   const noResults = !isEmpty && sortedMedications.length === 0
@@ -257,15 +245,13 @@ export function InventoryList({
       {/* Medication list */}
       {!isEmpty && !noResults && (
         <div>
-          {sortedMedications.map((medication) => (
+          {sortedMedications.map(({ medication, matcher }) => (
             <MedicationRow
               key={medication.id}
               medication={medication}
-              activeSubstances={activeSubstances}
+              matcher={matcher}
               isSelected={selectedId === medication.id}
               isPendingDelete={pendingDeleteId === medication.id}
-              showSubstances={medicationMatchesSubstance.has(medication.id)}
-              searchQuery={searchQuery}
               onSelect={() =>
                 onSelect?.(selectedId === medication.id ? null : medication.id)
               }

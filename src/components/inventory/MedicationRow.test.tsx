@@ -1,11 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MedicationRow } from './MedicationRow'
-import type { Medication, ActiveSubstance } from '@/types'
-
-const mockActiveSubstances: ActiveSubstance[] = [
-  { id: 1, name: 'Ibuprofen' },
-  { id: 2, name: 'Acetaminophen' },
-]
+import { MedicationMatcher } from '@/lib/search'
+import type { Medication } from '@/types'
 
 const mockMedication: Medication = {
   id: 1,
@@ -17,42 +13,54 @@ const mockMedication: Medication = {
 }
 
 describe('MedicationRow', () => {
-  it('shows substances when showSubstances is true, even if not selected', () => {
+  it('shows substances when matcher has substance match, even if not selected', () => {
+    const matcher = new MedicationMatcher('Advil', [
+      { name: 'Ibuprofen', concentration: '200mg' },
+    ], 'ibu')
+
     render(
       <MedicationRow
         medication={mockMedication}
-        activeSubstances={mockActiveSubstances}
+        matcher={matcher}
         isSelected={false}
-        showSubstances={true}
       />
     )
 
-    expect(screen.getByText(/Ibuprofen.*200mg/)).toBeInTheDocument()
+    // Text is split by highlight mark, so we check for the highlighted part
+    expect(screen.getByText('Ibu')).toBeInTheDocument()
+    expect(screen.getByText(/200mg/)).toBeInTheDocument()
   })
 
-  it('does not show substances when showSubstances is false and not selected', () => {
+  it('does not show substances when no match and not selected', () => {
+    const matcher = new MedicationMatcher('Advil', [
+      { name: 'Ibuprofen', concentration: '200mg' },
+    ], '')
+
     render(
       <MedicationRow
         medication={mockMedication}
-        activeSubstances={mockActiveSubstances}
+        matcher={matcher}
         isSelected={false}
-        showSubstances={false}
       />
     )
 
     expect(screen.queryByText(/Ibuprofen/)).not.toBeInTheDocument()
   })
 
-  it('shows substances when selected, regardless of showSubstances', () => {
+  it('shows substances when selected, regardless of match', () => {
+    const matcher = new MedicationMatcher('Advil', [
+      { name: 'Ibuprofen', concentration: '200mg' },
+    ], '')
+
     render(
       <MedicationRow
         medication={mockMedication}
-        activeSubstances={mockActiveSubstances}
+        matcher={matcher}
         isSelected={true}
-        showSubstances={false}
       />
     )
 
-    expect(screen.getByText(/Ibuprofen.*200mg/)).toBeInTheDocument()
+    expect(screen.getByText(/Ibuprofen/)).toBeInTheDocument()
+    expect(screen.getByText(/200mg/)).toBeInTheDocument()
   })
 })
