@@ -1,6 +1,11 @@
 import { sqliteTable, text, integer, primaryKey, check } from 'drizzle-orm/sqlite-core'
 import { sql } from 'drizzle-orm'
 
+export const settings = sqliteTable('settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+})
+
 export const medications = sqliteTable(
   'medications',
   {

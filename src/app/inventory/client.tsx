@@ -15,13 +15,16 @@ interface InventoryClientProps {
   }
   medications: Medication[]
   activeSubstances: ActiveSubstance[]
+  feedToken: string
 }
 
 export function InventoryClient({
   user,
   medications,
   activeSubstances,
+  feedToken,
 }: InventoryClientProps) {
+  const feedUrl = `/feed/${feedToken}/expired.xml`
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('expiration')
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -61,7 +64,7 @@ export function InventoryClient({
   }
 
   return (
-    <AppShell user={user} onLogout={handleLogout} onSearch={setSearchQuery} onNavigateToList={handleNavigateToList}>
+    <AppShell user={user} feedUrl={feedUrl} onLogout={handleLogout} onSearch={setSearchQuery} onNavigateToList={handleNavigateToList}>
       <InventoryList
         ref={inventoryListRef}
         medications={medications}

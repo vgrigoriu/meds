@@ -1,4 +1,5 @@
 export { AppShell } from './AppShell'
 export { Header } from './Header'
+export { Footer } from './Footer'
 export { SearchBar } from './SearchBar'
 export { UserMenu } from './UserMenu'

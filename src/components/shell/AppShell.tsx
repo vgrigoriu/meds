@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Header } from './Header'
+import { Footer } from './Footer'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -9,12 +10,13 @@ interface AppShellProps {
     name: string
     avatarUrl?: string
   }
+  feedUrl?: string
   onLogout?: () => void
   onSearch?: (query: string) => void
   onNavigateToList?: () => void
 }
 
-export function AppShell({ children, user, onLogout, onSearch, onNavigateToList }: AppShellProps) {
+export function AppShell({ children, user, feedUrl, onLogout, onSearch, onNavigateToList }: AppShellProps) {
   const [searchValue, setSearchValue] = useState('')
 
   const handleSearchChange = (value: string) => {
@@ -34,6 +36,7 @@ export function AppShell({ children, user, onLogout, onSearch, onNavigateToList 
       <main className="max-w-6xl mx-auto">
         {children}
       </main>
+      <Footer feedUrl={feedUrl} />
     </div>
   )
 }

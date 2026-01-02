@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { getMedications, getActiveSubstances } from '@/db/queries'
+import { getFeedToken } from '@/db/settings'
 import { InventoryClient } from './client'
 
 export default async function InventoryPage() {
@@ -14,12 +15,14 @@ export default async function InventoryPage() {
 
   const medications = await getMedications()
   const activeSubstances = await getActiveSubstances()
+  const feedToken = await getFeedToken()
 
   return (
     <InventoryClient
       user={user}
       medications={medications}
       activeSubstances={activeSubstances}
+      feedToken={feedToken}
     />
   )
 }
