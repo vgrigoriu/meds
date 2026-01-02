@@ -11,9 +11,10 @@ interface AppShellProps {
   }
   onLogout?: () => void
   onSearch?: (query: string) => void
+  onNavigateToList?: () => void
 }
 
-export function AppShell({ children, user, onLogout, onSearch }: AppShellProps) {
+export function AppShell({ children, user, onLogout, onSearch, onNavigateToList }: AppShellProps) {
   const [searchValue, setSearchValue] = useState('')
 
   const handleSearchChange = (value: string) => {
@@ -27,6 +28,7 @@ export function AppShell({ children, user, onLogout, onSearch }: AppShellProps) 
         user={user}
         searchValue={searchValue}
         onSearchChange={handleSearchChange}
+        onNavigateToList={onNavigateToList}
         onLogout={onLogout}
       />
       <main className="max-w-6xl mx-auto">

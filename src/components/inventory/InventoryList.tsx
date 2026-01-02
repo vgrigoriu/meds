@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useRef, useEffect } from 'react'
+import { useMemo, useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { ArrowUpDown, ChevronDown, Check, Plus } from 'lucide-react'
 import type { Medication, ActiveSubstance } from '@/types'
 import { MedicationMatcher } from '@/lib/search'
@@ -9,6 +9,10 @@ import { EmptyState } from './EmptyState'
 import { AddMedicationForm } from './AddMedicationForm'
 
 export type SortOption = 'expiration' | 'name'
+
+export interface InventoryListHandle {
+  selectFirst: () => void
+}
 
 interface InventoryListProps {
   medications: Medication[]
@@ -29,7 +33,7 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'name', label: 'Nume' },
 ]
 
-export function InventoryList({
+export const InventoryList = forwardRef<InventoryListHandle, InventoryListProps>(function InventoryList({
   medications,
   activeSubstances,
   searchQuery = '',
@@ -40,7 +44,7 @@ export function InventoryList({
   onSelect,
   onDelete,
   onUndo,
-}: InventoryListProps) {
+}, ref) {
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
@@ -93,6 +97,16 @@ export function InventoryList({
     })
   }, [filteredMedications, sortBy])
 
+  // Expose selectFirst method to parent via ref
+  useImperativeHandle(ref, () => ({
+    selectFirst: () => {
+      const first = sortedMedications[0]
+      if (first) {
+        onSelect?.(first.medication.id)
+      }
+    }
+  }), [sortedMedications, onSelect])
+
   // Handle keyboard shortcuts
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -119,8 +133,7 @@ export function InventoryList({
       // / - focus search bar
       if (event.key === '/') {
         event.preventDefault()
-        const searchInput = document.querySelector('input[type="text"][placeholder*="Caută"]') as HTMLInputElement
-        searchInput?.focus()
+        document.getElementById('search-input')?.focus()
         return
       }
 
@@ -263,4 +276,4 @@ export function InventoryList({
       )}
     </div>
   )
-}
+})

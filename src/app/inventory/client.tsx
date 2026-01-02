@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { signOut } from 'next-auth/react'
 import { AppShell } from '@/components/shell'
-import { InventoryList, SortOption } from '@/components/inventory'
+import { InventoryList, SortOption, InventoryListHandle } from '@/components/inventory'
 import { UndoToast } from '@/components/inventory/UndoToast'
 import { deleteMedication } from './actions'
 import type { Medication, ActiveSubstance } from '@/types'
@@ -26,6 +26,11 @@ export function InventoryClient({
   const [sortBy, setSortBy] = useState<SortOption>('expiration')
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [pendingDelete, setPendingDelete] = useState<{ id: number; name: string } | null>(null)
+  const inventoryListRef = useRef<InventoryListHandle>(null)
+
+  const handleNavigateToList = () => {
+    inventoryListRef.current?.selectFirst()
+  }
 
   const handleLogout = () => {
     signOut({ callbackUrl: '/login?signedOut=true' })
@@ -56,8 +61,9 @@ export function InventoryClient({
   }
 
   return (
-    <AppShell user={user} onLogout={handleLogout} onSearch={setSearchQuery}>
+    <AppShell user={user} onLogout={handleLogout} onSearch={setSearchQuery} onNavigateToList={handleNavigateToList}>
       <InventoryList
+        ref={inventoryListRef}
         medications={medications}
         activeSubstances={activeSubstances}
         searchQuery={searchQuery}
