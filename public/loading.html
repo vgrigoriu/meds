@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meds</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #020617;
+        color: #e2e8f0;
+      }
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+    }
+
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 2rem;
+      color: #14b8a6;
+    }
+
+    .message {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #e2e8f0;
+      border-top-color: #14b8a6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .spinner {
+        border-color: #334155;
+        border-top-color: #14b8a6;
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <svg class="logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pillGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="white"/>
+          <stop offset="100%" stop-color="#e2e8f0"/>
+        </linearGradient>
+        <linearGradient id="highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="white" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <circle cx="32" cy="32" r="30" fill="#14b8a6"/>
+      <circle cx="33" cy="34" r="18" fill="#0f766e" fill-opacity="0.5"/>
+      <circle cx="32" cy="32" r="18" fill="url(#pillGradient)"/>
+      <ellipse cx="32" cy="26" rx="12" ry="6" fill="url(#highlight)"/>
+      <path d="M24 40 L24 26 L32 34 L40 26 L40 40" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" transform="translate(-0.5, -0.5)"/>
+      <path d="M24 40 L24 26 L32 34 L40 26 L40 40" fill="none" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" transform="translate(0.5, 0.5)"/>
+    </svg>
+    <h1>Meds</h1>
+    <div class="spinner"></div>
+    <p class="message">Aveți puțintică răbdare!</p>
+  </div>
+
+  <script>
+    // Wait for server to wake up, then reload with hash to skip the race
+    fetch(window.location.href, { method: 'HEAD' })
+      .then(() => {
+        window.location.replace(window.location.href.split('#')[0] + '#_ready');
+        window.location.reload();
+      })
+      .catch(() => setTimeout(() => window.location.reload(), 5000));
+  </script>
+</body>
+</html>
