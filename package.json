@@ -9,6 +9,8 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx src/db/migrate.ts",
+    "db:export": "npx tsx src/db/export.ts",
+    "db:import": "npx tsx src/db/import.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "test": "jest",

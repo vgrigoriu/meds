@@ -38,6 +38,43 @@ Deploy:
 fly deploy
 ```
 
+## Export / Import SQLite Data
+
+Export the current database to a portable SQLite backup file:
+
+```bash
+npm run db:export -- ./meds-export.db
+```
+
+Import a backup file into the database configured by `DATABASE_PATH`:
+
+```bash
+npm run db:import -- ./meds-export.db
+```
+
+Use `--force` to replace an existing database after stopping the app. A
+timestamped rollback copy is created automatically.
+
+## Deploy on a Raspberry Pi
+
+See the full migration and Raspberry Pi deployment guide:
+
+- [docs/raspberry-pi.md](/Users/grigoriu/src/github.com/vgrigoriu/meds/docs/raspberry-pi.md)
+
+For ongoing deploys on the Pi:
+
+```bash
+cd /home/victor/projects/meds
+jj git fetch
+jj rebase -d main
+npm ci
+npm run build
+systemctl --user restart meds.service
+```
+
+Because migrations run on startup, schema changes are applied when the service
+restarts.
+
 ## Database Migrations
 
 Generate a new migration after changing `src/db/schema.ts`:
