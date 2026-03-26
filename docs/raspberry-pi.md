@@ -28,6 +28,12 @@ bye
 If you want to inspect the data before migrating, keep `meds-export.db` as your
 portable backup artifact.
 
+Copy the exported database from your local machine to the Raspberry Pi:
+
+```bash
+scp ./meds-export.db victor@<raspberry-pi-host>:/home/victor/.local/share/meds/meds-export.db
+```
+
 ## 2. Prepare the Raspberry Pi
 
 These steps assume Raspberry Pi OS 64-bit and a public hostname that will point
@@ -44,6 +50,10 @@ echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.co
 sudo apt-get update
 sudo apt-get install -y nodejs build-essential
 ```
+
+`build-essential` is included because `better-sqlite3` may need to compile a
+native addon during `npm ci` if a matching prebuilt binary is not available for
+your Pi's Node.js and CPU combination.
 
 Set up XDG directories for the `victor` user:
 
@@ -86,6 +96,27 @@ Notes:
 - This layout keeps config in `~/.config/meds`, persistent app data in
   `~/.local/share/meds`, and service state/log files in `~/.local/state/meds`.
 
+### OAuth Provider Updates
+
+For Google, you can usually reuse the existing OAuth app:
+
+1. Open the Google Cloud Console credentials page for your OAuth client.
+2. Add `https://meds.grigoriii.org` to Authorized JavaScript origins.
+3. Add `https://meds.grigoriii.org/api/auth/callback/google` to Authorized redirect URIs.
+4. Keep the existing client ID and secret, then place them in
+   `/home/victor/.config/meds/meds.env`.
+
+For GitHub, create a separate OAuth app for the Raspberry Pi deployment:
+
+1. Open [GitHub Developer Settings](https://github.com/settings/developers).
+2. Create a new OAuth App.
+3. Set Homepage URL to `https://meds.grigoriii.org`.
+4. Set Authorization callback URL to
+   `https://meds.grigoriii.org/api/auth/callback/github`.
+5. Copy the new client ID and client secret into
+   `/home/victor/.config/meds/meds.env` as `AUTH_GITHUB_ID` and
+   `AUTH_GITHUB_SECRET`.
+
 ## 3. Import the Database on the Pi
 
 Copy `meds-export.db` to the Pi, then import it:
@@ -95,14 +126,14 @@ cd /home/victor/projects/meds
 set -a
 source /home/victor/.config/meds/meds.env
 set +a
-npm run db:import -- /path/to/meds-export.db
+npm run db:import -- /home/victor/.local/share/meds/meds-export.db
 ```
 
 If `/home/victor/.local/share/meds/meds.db` already exists and you intentionally want to
 replace it, stop the app first and run:
 
 ```bash
-npm run db:import -- /path/to/meds-export.db --force
+npm run db:import -- /home/victor/.local/share/meds/meds-export.db --force
 ```
 
 `--force` keeps a timestamped rollback copy next to the existing database

@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { auth } from '@/auth'
 import { createMedication, softDeleteMedication, restoreMedication, type CreateMedicationInput } from '@/db/queries'
 import type { Presentation } from '@/types'
 
@@ -12,7 +13,17 @@ interface AddMedicationResult {
   medicationId?: number
 }
 
+async function requireAuth() {
+  const session = await auth()
+
+  if (!session?.user?.email) {
+    throw new Error('Unauthorized')
+  }
+}
+
 export async function addMedication(input: CreateMedicationInput): Promise<AddMedicationResult> {
+  await requireAuth()
+
   // Validate input
   if (!input.name?.trim()) {
     return { success: false, error: 'Numele este obligatoriu' }
@@ -56,6 +67,8 @@ interface DeleteMedicationResult {
 }
 
 export async function deleteMedication(id: number): Promise<DeleteMedicationResult> {
+  await requireAuth()
+
   try {
     softDeleteMedication(id)
     revalidatePath('/inventory')
@@ -67,6 +80,8 @@ export async function deleteMedication(id: number): Promise<DeleteMedicationResu
 }
 
 export async function undoDeleteMedication(id: number): Promise<DeleteMedicationResult> {
+  await requireAuth()
+
   try {
     restoreMedication(id)
     revalidatePath('/inventory')
