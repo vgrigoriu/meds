@@ -20,6 +20,10 @@ export function UndoToast({
   const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
+    if (!isVisible) {
+      return
+    }
+
     const startTime = Date.now()
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime
@@ -28,12 +32,13 @@ export function UndoToast({
 
       if (remaining === 0) {
         clearInterval(interval)
-        handleDismiss()
+        setIsVisible(false)
+        setTimeout(() => onDismiss?.(), 200)
       }
     }, 50)
 
     return () => clearInterval(interval)
-  }, [duration])
+  }, [duration, isVisible, onDismiss])
 
   const handleDismiss = () => {
     setIsVisible(false)
