@@ -8,9 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "npx tsx src/db/migrate.ts",
-    "db:export": "npx tsx src/db/export.ts",
-    "db:import": "npx tsx src/db/import.ts",
+    "db:migrate": "node --import tsx src/db/migrate.ts",
+    "db:export": "node --import tsx src/db/export.ts",
+    "db:import": "node --import tsx src/db/import.ts",
+    "db:rollback": "node --import tsx src/db/rollback.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "test": "jest",
@@ -41,6 +42,7 @@
     "jest-environment-jsdom": "^30.2.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.6",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
