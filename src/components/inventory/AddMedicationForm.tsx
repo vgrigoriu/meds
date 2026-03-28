@@ -48,22 +48,13 @@ export function AddMedicationForm({
   const [substances, setSubstances] = useState<SubstanceEntry[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [focusConcentrationIndex, setFocusConcentrationIndex] = useState<number | null>(null)
   const nameInputRef = useRef<HTMLInputElement>(null)
-  const concentrationRefs = useRef<(HTMLInputElement | null)[]>([])
+  const pendingFocusConcentrationIndex = useRef<number | null>(null)
 
   // Focus name input when form opens
   useEffect(() => {
     nameInputRef.current?.focus()
   }, [])
-
-  // Focus concentration input when a new substance is added
-  useEffect(() => {
-    if (focusConcentrationIndex !== null && concentrationRefs.current[focusConcentrationIndex]) {
-      concentrationRefs.current[focusConcentrationIndex]?.focus()
-      setFocusConcentrationIndex(null)
-    }
-  }, [focusConcentrationIndex, substances])
 
   // Filter out already-added substances from autocomplete
   const availableSubstances = activeSubstances.filter(
@@ -73,8 +64,8 @@ export function AddMedicationForm({
   function handleAddSubstance(substanceName: string) {
     if (!substances.some((s) => s.name.toLowerCase() === substanceName.toLowerCase())) {
       const newIndex = substances.length
+      pendingFocusConcentrationIndex.current = newIndex
       setSubstances([...substances, { name: substanceName, concentration: '' }])
-      setFocusConcentrationIndex(newIndex)
     }
   }
 
@@ -199,7 +190,12 @@ export function AddMedicationForm({
                     {substance.name}
                   </span>
                   <input
-                    ref={(el) => { concentrationRefs.current[index] = el }}
+                    ref={(el) => {
+                      if (el && pendingFocusConcentrationIndex.current === index) {
+                        pendingFocusConcentrationIndex.current = null
+                        el.focus()
+                      }
+                    }}
                     type="text"
                     value={substance.concentration}
                     onChange={(e) => handleConcentrationChange(index, e.target.value)}

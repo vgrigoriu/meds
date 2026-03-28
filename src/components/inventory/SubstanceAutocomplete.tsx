@@ -47,11 +47,8 @@ export function SubstanceAutocomplete({
     ...(showAddOption ? [{ type: 'add' as const, name: query.trim() }] : []),
     ...filtered.map((s) => ({ type: 'existing' as const, name: s.name })),
   ]
-
-  // Reset highlight when options change
-  useEffect(() => {
-    setHighlightedIndex(-1)
-  }, [query, substances.length])
+  const activeHighlightedIndex =
+    highlightedIndex >= 0 && highlightedIndex < options.length ? highlightedIndex : -1
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -93,8 +90,8 @@ export function SubstanceAutocomplete({
         break
       case 'Enter':
         e.preventDefault()
-        if (highlightedIndex >= 0 && options[highlightedIndex]) {
-          handleSelect(options[highlightedIndex].name)
+        if (activeHighlightedIndex >= 0 && options[activeHighlightedIndex]) {
+          handleSelect(options[activeHighlightedIndex].name)
         } else if (options.length > 0) {
           handleSelect(options[0].name)
         }
@@ -121,6 +118,7 @@ export function SubstanceAutocomplete({
         onChange={(e) => {
           setQuery(e.target.value)
           setIsOpen(true)
+          setHighlightedIndex(-1)
         }}
         onFocus={() => setIsOpen(true)}
         onKeyDown={handleKeyDown}
@@ -141,7 +139,7 @@ export function SubstanceAutocomplete({
                   ? 'flex items-center gap-2 text-teal-600 dark:text-teal-400'
                   : 'text-slate-700 dark:text-slate-300'
               } ${
-                highlightedIndex === index
+                activeHighlightedIndex === index
                   ? 'bg-slate-100 dark:bg-slate-700'
                   : 'hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}

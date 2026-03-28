@@ -250,7 +250,7 @@ export const InventoryList = forwardRef<InventoryListHandle, InventoryListProps>
       {noResults && (
         <div className="py-12 text-center">
           <p className="text-slate-500 dark:text-slate-400">
-            Niciun medicament găsit pentru „{searchQuery}"
+            Niciun medicament găsit pentru „{searchQuery}”
           </p>
         </div>
       )}

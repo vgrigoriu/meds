@@ -9,14 +9,12 @@ interface ToastProps {
 
 export function Toast({ message, duration = 3000 }: ToastProps) {
   const [opacity, setOpacity] = useState(1)
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+  )
 
   useEffect(() => {
-    // Check initial dark mode
     const darkQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    setIsDark(darkQuery.matches)
-
-    // Listen for changes
     const handler = (e: MediaQueryListEvent) => setIsDark(e.matches)
     darkQuery.addEventListener('change', handler)
     return () => darkQuery.removeEventListener('change', handler)
