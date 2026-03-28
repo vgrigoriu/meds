@@ -12,7 +12,7 @@ export const medications = sqliteTable(
     id: integer('id').primaryKey({ autoIncrement: true }),
     name: text('name').notNull(),
     presentation: text('presentation', {
-      enum: ['pill', 'syrup', 'spray', 'cream', 'drops', 'other'],
+      enum: ['pill', 'syrup', 'spray', 'cream', 'drops', 'sachet', 'other'],
     }).notNull(),
     expirationYear: integer('expiration_year').notNull(),
     expirationMonth: integer('expiration_month').notNull(),
@@ -21,7 +21,7 @@ export const medications = sqliteTable(
   (table) => [
     check('valid_year', sql`${table.expirationYear} >= 2000 AND ${table.expirationYear} <= 2100`),
     check('valid_month', sql`${table.expirationMonth} >= 1 AND ${table.expirationMonth} <= 12`),
-    check('valid_presentation', sql`${table.presentation} IN ('pill', 'syrup', 'spray', 'cream', 'drops', 'other')`),
+    check('valid_presentation', sql`${table.presentation} IN ('pill', 'syrup', 'spray', 'cream', 'drops', 'sachet', 'other')`),
   ]
 )
 

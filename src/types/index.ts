@@ -2,7 +2,7 @@
 // Data Types
 // =============================================================================
 
-export type Presentation = 'pill' | 'syrup' | 'spray' | 'cream' | 'drops' | 'other'
+export type Presentation = 'pill' | 'syrup' | 'spray' | 'cream' | 'drops' | 'sachet' | 'other'
 
 export const presentationLabels: Record<Presentation, string> = {
   pill: 'Comprimat',
@@ -10,6 +10,7 @@ export const presentationLabels: Record<Presentation, string> = {
   spray: 'Spray',
   cream: 'Cremă',
   drops: 'Picături',
+  sachet: 'Plic',
   other: 'Altele',
 }
 

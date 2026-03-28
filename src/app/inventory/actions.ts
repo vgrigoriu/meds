@@ -5,7 +5,7 @@ import { auth } from '@/auth'
 import { createMedication, softDeleteMedication, restoreMedication, type CreateMedicationInput } from '@/db/queries'
 import type { Presentation } from '@/types'
 
-const VALID_PRESENTATIONS: Presentation[] = ['pill', 'syrup', 'spray', 'cream', 'drops', 'other']
+const VALID_PRESENTATIONS: Presentation[] = ['pill', 'syrup', 'spray', 'cream', 'drops', 'sachet', 'other']
 
 interface AddMedicationResult {
   success: boolean

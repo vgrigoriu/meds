@@ -43,6 +43,13 @@
       "when": 1767373459274,
       "tag": "0005_curly_imperial_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1774628262457,
+      "tag": "0006_famous_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }
