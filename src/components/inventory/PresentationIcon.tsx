@@ -1,5 +1,6 @@
-import { Pill, FlaskConical, SprayCan, Droplets, Package, Pocket } from 'lucide-react'
+import { Pill, FlaskConical, SprayCan, Droplets, Package } from 'lucide-react'
 import { presentationLabels, type Presentation } from '@/types'
+import { SachetIcon } from './SachetIcon'
 
 interface PresentationIconProps {
   presentation: Presentation
@@ -12,7 +13,7 @@ const iconMap: Record<Presentation, React.ComponentType<{ className?: string }>>
   spray: SprayCan,
   cream: Droplets,
   drops: Droplets,
-  sachet: Pocket,
+  sachet: SachetIcon,
   other: Package,
 }
 
